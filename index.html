@@ -1,0 +1,1452 @@
+<!DOCTYPE html><html lang="vi"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Thông Tin Chuyển Đổi Số</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            height: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .logo-icon {
+            position: relative;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 50%, #74b9ff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .logo-icon i {
+            font-size: 1.4rem;
+            color: white;
+            z-index: 1;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .logo-text {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            position: relative;
+            background: linear-gradient(135deg, #ffffff 0%, #e8f4fd 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            transition: all 0.3s ease;
+        }
+
+        .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd93d, transparent);
+            border-radius: 1px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover .logo-icon {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .logo:hover .logo-text::after {
+            transform: scaleX(1);
+        }
+
+        .logo:hover .logo-text {
+            transform: translateY(-1px);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-menu li {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            height: 100%;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .nav-menu a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .nav-menu a i {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .nav-menu a span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            min-width: 250px;
+            height: 40px;
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            color: white;
+            outline: none;
+            flex: 1;
+            margin-left: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .search-box i {
+            font-size: 1rem;
+        }
+
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23667eea" width="1200" height="600"/><circle fill="%23764ba2" cx="200" cy="100" r="50" opacity="0.3"/><circle fill="%23667eea" cx="800" cy="200" r="80" opacity="0.2"/><circle fill="%23764ba2" cx="1000" cy="400" r="60" opacity="0.3"/></svg>');
+            height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Stats Section */
+        .stats {
+            background: white;
+            padding: 3rem 0;
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 1px solid #eee;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 3.5rem;
+            color: #667eea;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            margin: 4rem 0;
+        }
+
+        /* Left Content */
+        .left-content {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .section-icon {
+            font-size: 1.2rem;
+        }
+
+        .section-content {
+            padding: 0;
+        }
+
+        /* Innovation & Competition Items */
+        .item-card {
+            padding: 2rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .item-card:last-child {
+            border-bottom: none;
+        }
+
+        .item-card:hover {
+            background: #f8f9ff;
+            transform: translateX(5px);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .item-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .item-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-completed {
+            background: #cce7ff;
+            color: #004085;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-ongoing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            background: #f8f9fa;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .sidebar-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e9ecef 100%);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-content {
+            padding: 0;
+        }
+
+        /* News Items */
+        .news-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-item:hover {
+            background: #f8f9ff;
+        }
+
+        .news-header {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .news-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .news-icon.award { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .news-icon.ai { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .news-icon.training { background: linear-gradient(135deg, #00b894, #00cec9); }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .news-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Honor Wall */
+        .honor-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            background: linear-gradient(135deg, #fff9e6 0%, #ffeaa7 20%, #fff9e6 100%);
+            transition: all 0.3s;
+        }
+
+        .honor-item:last-child {
+            border-bottom: none;
+        }
+
+        .honor-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.2);
+        }
+
+        .honor-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .honor-icon {
+            font-size: 1.2rem;
+            color: #f39c12;
+        }
+
+        .honor-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .honor-person {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.3rem;
+        }
+
+        .honor-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-about {
+            max-width: 400px;
+        }
+
+        .footer-about p {
+            color: #bdc3c7;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #bdc3c7;
+        }
+
+        .contact-item i {
+            width: 20px;
+            text-align: center;
+            color: #667eea;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 3rem;
+            padding-top: 2rem;
+            text-align: center;
+            color: #bdc3c7;
+        }
+
+        .footer-bottom-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .back-to-top:hover {
+            background: #5a67d8;
+            transform: translateY(-3px);
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        /* User Profile */
+        .user-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            height: 100%;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-avatar:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .notifications {
+            position: relative;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .notifications:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-box {
+                min-width: 200px;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .footer-bottom-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <span class="logo-text">X01</span>
+            </div>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-home"></i>
+                            <span>Trang chủ</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Sáng kiến</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-trophy"></i>
+                            <span>Thi đua</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Tin tức</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-star"></i>
+                            <span>Vinh danh</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="user-menu">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Tìm kiếm...">
+                </div>
+                
+                <div class="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+        <div class="hero-content fade-in-up">
+            <h1>Cổng Thông Tin Chuyển Đổi Số</h1>
+            <p>Nền tảng tập trung các sáng kiến, chương trình thi đua và thông tin về chuyển đổi số. Cùng nhau xây dựng tương lai số hóa!</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i>
+                    Khám phá sáng kiến
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    <i class="fas fa-chart-line"></i>
+                    Xem Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card fade-in-up">
+                    <div class="stat-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">Sáng kiến đang triển khai</div>
+                </div>
+                
+                <div class="stat-card fade-in-up">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">2,341</div>
+                    <div class="stat-label">Nhân viên tham gia</div>
+                </div>
+                
+                <div class="stat-card fade-in-up">
+                    <div class="stat-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="stat-number">89</div>
+                    <div class="stat-label">Giải thưởng đạt được</div>
+                </div>
+
+                <div class="stat-card fade-in-up">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-number">34%</div>
+                    <div class="stat-label">Tăng trưởng hiệu suất</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Left Content -->
+            <div class="left-content">
+                <!-- Sáng kiến mới nhất -->
+                <div class="content-section fade-in-up">
+                    <div class="section-header">
+                        <i class="fas fa-lightbulb section-icon"></i>
+                        <h2 class="section-title">Sáng kiến mới nhất</h2>
+                    </div>
+                    
+                    <div class="section-content">
+                        <div class="item-card">
+                            <div class="item-header">
+                                <div>
+                                    <div class="item-title">Tự động hóa quy trình báo cáo tài chính</div>
+                                    <div class="item-meta">
+                                        <span><i class="fas fa-user"></i> Phòng Tài chính</span>
+                                        <span><i class="fas fa-calendar"></i> 15/07/2025</span>
+                                    </div>
+                                </div>
+                                <div class="status-badge status-active">Đang triển khai</div>
+                            </div>
+                            
+                            <div class="item-description">
+                                Ứng dụng AI và RPA để tự động hóa việc thu thập, xử lý và tạo báo cáo tài chính hàng tháng. Giảm 80% thời gian xử lý và nâng cao độ chính xác.
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%;"></div>
+                                </div>
+                                <div class="progress-text">Tiến độ: 75% - Dự kiến hoàn thành 30/08/2025</div>
+                            </div>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-header">
+                                <div>
+                                    <div class="item-title">Chatbot hỗ trợ khách hàng 24/7</div>
+                                    <div class="item-meta">
+                                        <span><i class="fas fa-user"></i> Phòng CSKH</span>
+                                        <span><i class="fas fa-calendar"></i> 10/07/2025</span>
+                                    </div>
+                                </div>
+                                <div class="status-badge status-pending">Chờ phê duyệt</div>
+                            </div>
+                            
+                            <div class="item-description">
+                                Triển khai chatbot AI xử lý 70% câu hỏi thường gặp của khách hàng, cải thiện thời gian phản hồi từ 2 giờ xuống 2 giây.
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%;"></div>
+                                </div>
+                                <div class="progress-text">Tiến độ: 25% - Đang trong giai đoạn nghiên cứu</div>
+                            </div>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-header">
+                                <div>
+                                    <div class="item-title">Hệ thống quản lý tài liệu điện tử</div>
+                                    <div class="item-meta">
+                                        <span><i class="fas fa-user"></i> Phòng Hành chính</span>
+                                        <span><i class="fas fa-calendar"></i> 05/07/2025</span>
+                                    </div>
+                                </div>
+                                <div class="status-badge status-completed">Hoàn thành</div>
+                            </div>
+                            
+                            <div class="item-description">
+                                Số hóa toàn bộ quy trình quản lý tài liệu, lưu trữ số, phê duyệt điện tử. Giảm 90% giấy tờ và tăng 50% tốc độ xử lý.
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%;"></div>
+                                </div>
+                                <div class="progress-text">Hoàn thành - Đã triển khai toàn công ty</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chương trình thi đua -->
+                <div class="content-section fade-in-up">
+                    <div class="section-header">
+                        <i class="fas fa-trophy section-icon"></i>
+                        <h2 class="section-title">Chương trình thi đua</h2>
+                    </div>
+                    
+                    <div class="section-content">
+                        <div class="item-card">
+                            <div class="item-header">
+                                <div>
+                                    <div class="item-title">Thi đua Sáng kiến Xuất sắc Q3/2025</div>
+                                    <div class="item-meta">
+                                        <span><i class="fas fa-clock"></i> 01/07 - 30/09/2025</span>
+                                        <span><i class="fas fa-users"></i> 156 người tham gia</span>
+                                    </div>
+                                </div>
+                                <div class="status-badge status-ongoing">Đang diễn ra</div>
+                            </div>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-header">
+                                <div>
+                                    <div class="item-title">Cuộc thi "Ý tưởng Chuyển đổi số"</div>
+                                    <div class="item-meta">
+                                        <span><i class="fas fa-calendar"></i> Hạn nộp: 15/08/2025</span>
+                                        <span><i class="fas fa-gift"></i> Giải thưởng: 100 triệu đồng</span>
+                                    </div>
+                                </div>
+                                <div class="status-badge status-ongoing">Sắp kết thúc</div>
+                            </div>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-header">
+                                <div>
+                                    <div class="item-title">Thi đua Tiết kiệm năng lượng</div>
+                                    <div class="item-meta">
+                                        <span><i class="fas fa-target"></i> Mục tiêu: Giảm 20% điện năng</span>
+                                        <span><i class="fas fa-chart-bar"></i> Tiến độ: 65%</span>
+                                    </div>
+                                </div>
+                                <div class="status-badge status-ongoing">Đang diễn ra</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="right-sidebar">
+                <!-- Tin tức nổi bật -->
+                <div class="sidebar-section fade-in-up">
+                    <div class="sidebar-header">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-newspaper"></i>
+                            Tin tức nổi bật
+                        </h3>
+                    </div>
+                    
+                    <div class="sidebar-content">
+                        <div class="news-item">
+                            <div class="news-header">
+                                <div class="news-icon award">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <div class="news-content">
+                                    <div class="news-title">Công ty nhận giải thưởng "Doanh nghiệp Chuyển đổi số xuất sắc 2025"</div>
+                                    <div class="news-meta">
+                                        <span><i class="fas fa-calendar"></i> 12/07/2025</span>
+                                        <span><i class="fas fa-eye"></i> 1,234 lượt xem</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="news-description">
+                                Ban tổ chức đánh giá cao những nỗ lực trong việc ứng dụng công nghệ số để nâng cao hiệu quả hoạt động...
+                            </div>
+                        </div>
+
+                        <div class="news-item">
+                            <div class="news-header">
+                                <div class="news-icon ai">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="news-content">
+                                    <div class="news-title">Ra mắt nền tảng AI phân tích dữ liệu khách hàng</div>
+                                    <div class="news-meta">
+                                        <span><i class="fas fa-calendar"></i> 10/07/2025</span>
+                                        <span><i class="fas fa-eye"></i> 892 lượt xem</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="news-description">
+                                Hệ thống mới giúp phân tích hành vi khách hàng và đưa ra dự đoán chính xác về xu hướng thị trường...
+                            </div>
+                        </div>
+
+                        <div class="news-item">
+                            <div class="news-header">
+                                <div class="news-icon training">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="news-content">
+                                    <div class="news-title">Khóa đào tạo "Kỹ năng số cho thời đại 4.0"</div>
+                                    <div class="news-meta">
+                                        <span><i class="fas fa-calendar"></i> 08/07/2025</span>
+                                        <span><i class="fas fa-eye"></i> 567 lượt xem</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="news-description">
+                                Chương trình đào tạo tập trung vào các kỹ năng cần thiết trong môi trường làm việc số...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tường vinh danh -->
+                <div class="sidebar-section fade-in-up">
+                    <div class="sidebar-header">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-star"></i>
+                            Tường vinh danh
+                        </h3>
+                    </div>
+                    
+                    <div class="sidebar-content">
+                        <div class="honor-item">
+                            <div class="honor-header">
+                                <i class="fas fa-trophy honor-icon"></i>
+                                <div class="honor-title">Nhân viên xuất sắc tháng 7</div>
+                            </div>
+                            <div class="honor-person">Nguyễn Văn A - Phòng IT</div>
+                            <div class="honor-description">
+                                Triển khai thành công hệ thống backup tự động
+                            </div>
+                        </div>
+
+                        <div class="honor-item">
+                            <div class="honor-header">
+                                <i class="fas fa-medal honor-icon"></i>
+                                <div class="honor-title">Đội nhóm tiêu biểu</div>
+                            </div>
+                            <div class="honor-person">Team Digital Marketing</div>
+                            <div class="honor-description">
+                                Tăng 300% hiệu quả chiến lược quảng cáo online
+                            </div>
+                        </div>
+
+                        <div class="honor-item">
+                            <div class="honor-header">
+                                <i class="fas fa-star honor-icon"></i>
+                                <div class="honor-title">Sáng kiến được yêu thích nhất</div>
+                            </div>
+                            <div class="honor-person">App check-in bằng QR Code</div>
+                            <div class="honor-description">
+                                1,247 lượt like, 89 bình luận
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <!-- Thông tin ngân hàng -->
+            <div class="footer-section footer-about">
+                <h3>
+                    <i class="fas fa-university"></i>
+                    Ngân hàng ABC
+                </h3>
+                <p>
+                    Cổng thông tin chuyển đổi số nội bộ - Hệ thống tập trung các sáng kiến, 
+                    chương trình thi đua và thông tin cập nhật về quá trình phát triển công nghệ ngân hàng.
+                </p>
+            </div>
+
+            <!-- Danh mục nội bộ -->
+            <div class="footer-section">
+                <h3>
+                    <i class="fas fa-sitemap"></i>
+                    Danh mục nội bộ
+                </h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Sáng kiến chuyển đổi số</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Chương trình thi đua</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Tin tức &amp; Thông báo</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Dashboard &amp; Báo cáo</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Tường vinh danh</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Đào tạo nội bộ</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Quy trình số hóa</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Hỗ trợ kỹ thuật</a></li>
+                </ul>
+            </div>
+
+            <!-- Hỗ trợ nội bộ -->
+            <div class="footer-section">
+                <h3>
+                    <i class="fas fa-headset"></i>
+                    Hỗ trợ nội bộ
+                </h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>IT Helpdesk: Ext 1234</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>it.support@nganhanganbc.vn</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>24/7 - Hỗ trợ khẩn cấp</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Ticket System: service.abc.vn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <div>
+                    <p>© 2025 Ngân hàng ABC - Cổng Thông Tin Chuyển Đổi Số. Dành riêng cho nội bộ ngân hàng.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#">Quy định bảo mật</a>
+                    <a href="#">Chính sách sử dụng</a>
+                    <a href="#">Hướng dẫn</a>
+                    <a href="#">Liên hệ IT</a>
+                    <a href="#">Báo cáo sự cố</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        // Enhanced animations and interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on scroll
+            const cards = document.querySelectorAll('.stat-card, .content-section, .sidebar-section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                    }
+                });
+            });
+
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease-out';
+                observer.observe(card);
+            });
+
+            // Progress bar animation
+            setTimeout(() => {
+                document.querySelectorAll('.progress-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 500);
+                });
+            }, 1000);
+
+            // Enhanced search functionality
+            const searchInput = document.querySelector('.search-box input');
+            searchInput.addEventListener('focus', function() {
+                this.parentElement.style.background = 'rgba(255,255,255,0.3)';
+                this.parentElement.style.transform = 'scale(1.05)';
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                this.parentElement.style.background = 'rgba(255,255,255,0.2)';
+                this.parentElement.style.transform = 'scale(1)';
+            });
+
+            // Back to top functionality
+            const backToTopBtn = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopBtn.classList.add('show');
+                } else {
+                    backToTopBtn.classList.remove('show');
+                }
+            });
+
+            backToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Click handlers
+            document.querySelectorAll('.item-card').forEach(item => {
+                item.addEventListener('click', function() {
+                    console.log('Viewing item:', this.querySelector('.item-title').textContent);
+                });
+            });
+
+            document.querySelectorAll('.news-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    console.log('Reading news:', this.querySelector('.news-title').textContent);
+                });
+            });
+
+            // Notification interaction
+            document.querySelector('.notifications').addEventListener('click', function() {
+                alert('🔔 Bạn có 3 thông báo mới!\n\n• Sáng kiến "AI Chatbot" cần phản hồi\n• Cuộc thi "Ý tưởng chuyển đổi số" sắp hết hạn\n• Báo cáo bảo mật hệ thống tháng 7');
+            });
+
+            // Stats animation on hover
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    const number = this.querySelector('.stat-number');
+                    number.style.transform = 'scale(1.1)';
+                    number.style.color = '#667eea';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const number = this.querySelector('.stat-number');
+                    number.style.transform = 'scale(1)';
+                    number.style.color = '#333';
+                });
+            });
+
+            // Footer links interactions
+            document.querySelectorAll('.footer-section ul li a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Navigating to:', this.textContent.trim());
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

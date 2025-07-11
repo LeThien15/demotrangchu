@@ -1,0 +1,2428 @@
+<!DOCTYPE html><html lang="vi"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Sáng kiến - Tự động hóa quy trình báo cáo tài chính</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            height: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 200px;
+        }
+
+        .logo-icon {
+            position: relative;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 50%, #74b9ff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .logo-icon i {
+            font-size: 1.4rem;
+            color: white;
+            z-index: 1;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .logo-text {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #ffffff 0%, #e8f4fd 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-menu li {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            height: 100%;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .nav-menu a i {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .nav-menu a span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            min-width: 250px;
+            height: 40px;
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            color: white;
+            outline: none;
+            flex: 1;
+            margin-left: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .breadcrumb-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .breadcrumb-nav a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: #5a67d8;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .page-header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .initiative-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .initiative-title-section {
+            flex: 1;
+        }
+
+        .initiative-id {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .initiative-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .initiative-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .initiative-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .meta-item i {
+            font-size: 1.1rem;
+        }
+
+        .initiative-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .initiative-status {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .status-badge {
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .progress-section {
+            flex: 1;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            border-radius: 6px;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .tab-navigation::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            padding: 1.2rem 2rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            background: white;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .tab-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 2rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Description Tab */
+        .description-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-title i {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .description-content {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 1.5rem;
+        }
+
+        .description-text {
+            color: #666;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .objective-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .objective-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .objective-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .objective-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .objective-icon.primary { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .objective-icon.success { background: linear-gradient(135deg, #28a745, #20c997); }
+        .objective-icon.warning { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+        .objective-icon.info { background: linear-gradient(135deg, #17a2b8, #6f42c1); }
+
+        .objective-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .objective-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .scope-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .scope-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .scope-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .scope-item i {
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        /* Results Tab */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .kpi-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .kpi-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .achievements-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .achievement-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid #28a745;
+        }
+
+        .achievement-icon {
+            color: #28a745;
+            font-size: 1.2rem;
+            margin-top: 0.2rem;
+        }
+
+        .achievement-content {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .achievement-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Tab */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .chart-period {
+            font-size: 0.8rem;
+            color: #666;
+            background: #f8f9fa;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 300px;
+        }
+
+        .realtime-data {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .data-item {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .data-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.3rem;
+        }
+
+        .data-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Q&A Tab */
+        .qa-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .ask-question-btn {
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ask-question-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .question-form {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 2px solid #e9ecef;
+            display: none;
+        }
+
+        .question-form.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-submit {
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #5a67d8;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+
+        .questions-list {
+            list-style: none;
+        }
+
+        .question-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .question-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .question-header {
+            padding: 1.2rem 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .question-author {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .author-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .question-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .question-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-answered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .question-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-content {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .question-actions {
+            padding: 1rem 1.5rem;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .question-controls {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .control-btn {
+            background: none;
+            border: 1px solid #dee2e6;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #666;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .answer-section {
+            padding: 1.5rem;
+            background: #f8f9ff;
+            border-top: 1px solid #e9ecef;
+            display: none;
+        }
+
+        .answer-section.active {
+            display: block;
+        }
+
+        .answer-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid #28a745;
+        }
+
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .answer-author {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .answer-content {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e9ecef 100%);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-content {
+            padding: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .team-member:last-child {
+            border-bottom: none;
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .member-role {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .file-item:hover {
+            background: #e9ecef;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .file-icon.pdf { background: #dc3545; }
+        .file-icon.doc { background: #0066cc; }
+        .file-icon.xls { background: #28a745; }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 35px;
+            bottom: -15px;
+            width: 2px;
+            background: #e9ecef;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: white;
+            flex-shrink: 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .timeline-icon.success { background: #28a745; }
+        .timeline-icon.warning { background: #ffc107; }
+        .timeline-icon.info { background: #17a2b8; }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-date {
+            color: #666;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-description {
+            color: #666;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .initiative-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .initiative-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .tab-navigation {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .objectives-grid,
+            .kpi-grid,
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <span class="logo-text">X01</span>
+            </div>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-home"></i>
+                            <span>Trang chủ</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="active">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Sáng kiến</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-trophy"></i>
+                            <span>Thi đua</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Tin tức</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-star"></i>
+                            <span>Vinh danh</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="user-menu">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Tìm kiếm...">
+                </div>
+                
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-container">
+            <nav class="breadcrumb-nav">
+                <a href="#"><i class="fas fa-home"></i> Trang chủ</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="#">Danh sách Sáng kiến</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Tự động hóa quy trình báo cáo tài chính</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-container">
+            <div class="initiative-header">
+                <div class="initiative-title-section">
+                    <div class="initiative-id">#SK-2024-001</div>
+                    <h1 class="initiative-title">Tự động hóa quy trình báo cáo tài chính</h1>
+                    <p class="initiative-subtitle">
+                        Ứng dụng AI và RPA để tự động hóa việc thu thập, xử lý và tạo báo cáo tài chính hàng tháng
+                    </p>
+                    <div class="initiative-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>Phòng Công nghệ</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Bắt đầu: 15/07/2025</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Kết thúc: 30/08/2025</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-users"></i>
+                            <span>8 thành viên</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="initiative-actions">
+                    <a href="#" class="action-btn btn-primary">
+                        <i class="fas fa-edit"></i>
+                        Chỉnh sửa
+                    </a>
+                    <a href="#" class="action-btn btn-secondary">
+                        <i class="fas fa-share"></i>
+                        Chia sẻ
+                    </a>
+                </div>
+            </div>
+
+            <div class="initiative-status">
+                <div class="status-badge">Đang triển khai</div>
+                <div class="progress-section">
+                    <div class="progress-label">Tiến độ hoàn thành: 75%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%;"></div>
+                    </div>
+                    <div class="progress-text">Dự kiến hoàn thành: 30/08/2025</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="description">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Mô tả</span>
+                </button>
+                <button class="tab-btn" data-tab="results">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Kết quả</span>
+                </button>
+                <button class="tab-btn" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="tab-btn" data-tab="qa">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Hỏi &amp; Đáp</span>
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <!-- Description Tab -->
+            <div class="tab-content active" id="description">
+                <div class="description-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-file-alt"></i>
+                        Mô tả chi tiết
+                    </h2>
+                    <div class="description-content">
+                        <p class="description-text">
+                            Dự án này nhằm ứng dụng công nghệ AI (Artificial Intelligence) và RPA (Robotic Process Automation) 
+                            để tự động hóa hoàn toàn quy trình báo cáo tài chính hàng tháng. Hệ thống sẽ tự động thu thập dữ liệu 
+                            từ các nguồn khác nhau, xử lý và phân tích thông tin, sau đó tạo ra các báo cáo tài chính chuẩn hóa 
+                            một cách chính xác và kịp thời.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="description-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-bullseye"></i>
+                        Mục tiêu dự án
+                    </h2>
+                    <div class="objectives-grid">
+                        <div class="objective-card">
+                            <div class="objective-header">
+                                <div class="objective-icon primary">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="objective-title">Tối ưu thời gian</div>
+                            </div>
+                            <div class="objective-description">
+                                Giảm 80% thời gian xử lý báo cáo từ 5 ngày xuống còn 1 ngày, 
+                                giúp tăng hiệu suất làm việc của đội ngũ tài chính.
+                            </div>
+                        </div>
+
+                        <div class="objective-card">
+                            <div class="objective-header">
+                                <div class="objective-icon success">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="objective-title">Nâng cao độ chính xác</div>
+                            </div>
+                            <div class="objective-description">
+                                Đạt độ chính xác 99.5% trong việc xử lý dữ liệu, 
+                                giảm thiểu sai sót do con người và đảm bảo tuân thủ quy định.
+                            </div>
+                        </div>
+
+                        <div class="objective-card">
+                            <div class="objective-header">
+                                <div class="objective-icon warning">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="objective-title">Tiết kiệm chi phí</div>
+                            </div>
+                            <div class="objective-description">
+                                Giảm 60% chi phí vận hành quy trình báo cáo, 
+                                tối ưu hóa nguồn lực và tăng ROI cho doanh nghiệp.
+                            </div>
+                        </div>
+
+                        <div class="objective-card">
+                            <div class="objective-header">
+                                <div class="objective-icon info">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="objective-title">Minh bạch dữ liệu</div>
+                            </div>
+                            <div class="objective-description">
+                                Cung cấp khả năng truy xuất và theo dõi dữ liệu real-time, 
+                                hỗ trợ ra quyết định nhanh chóng và chính xác.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="description-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-project-diagram"></i>
+                        Phạm vi dự án
+                    </h2>
+                    <div class="scope-section">
+                        <div class="scope-items">
+                            <div class="scope-item">
+                                <i class="fas fa-database"></i>
+                                <span>Tích hợp dữ liệu từ 15+ hệ thống core banking</span>
+                            </div>
+                            <div class="scope-item">
+                                <i class="fas fa-robot"></i>
+                                <span>Triển khai 8 bot RPA cho các quy trình chính</span>
+                            </div>
+                            <div class="scope-item">
+                                <i class="fas fa-brain"></i>
+                                <span>Ứng dụng AI/ML cho dự đoán và phân tích</span>
+                            </div>
+                            <div class="scope-item">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Tạo 25+ mẫu báo cáo tự động</span>
+                            </div>
+                            <div class="scope-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Đảm bảo bảo mật và tuân thủ quy định</span>
+                            </div>
+                            <div class="scope-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Đào tạo 50+ nhân viên sử dụng hệ thống</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Tab -->
+            <div class="tab-content" id="results">
+                <div class="description-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-trophy"></i>
+                        Chỉ số hiệu suất (KPIs)
+                    </h2>
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="kpi-value">80%</div>
+                            <div class="kpi-label">Giảm thời gian xử lý</div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="kpi-value">99.5%</div>
+                            <div class="kpi-label">Độ chính xác</div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="kpi-value">60%</div>
+                            <div class="kpi-label">Tiết kiệm chi phí</div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="kpi-value">45</div>
+                            <div class="kpi-label">Nhân viên được đào tạo</div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="kpi-value">6/8</div>
+                            <div class="kpi-label">Bot RPA hoàn thành</div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="kpi-value">18</div>
+                            <div class="kpi-label">Báo cáo tự động</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="description-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-medal"></i>
+                        Thành tựu đạt được
+                    </h2>
+                    <div class="achievements-section">
+                        <ul class="achievement-list">
+                            <li class="achievement-item">
+                                <div class="achievement-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="achievement-content">
+                                    <div class="achievement-title">Hoàn thành tích hợp dữ liệu</div>
+                                    <div class="achievement-description">
+                                        Đã tích hợp thành công dữ liệu từ 12/15 hệ thống core banking, 
+                                        đảm bảo đồng bộ hóa thông tin real-time.
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="achievement-item">
+                                <div class="achievement-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="achievement-content">
+                                    <div class="achievement-title">Triển khai RPA thành công</div>
+                                    <div class="achievement-description">
+                                        6/8 bot RPA đã được triển khai và hoạt động ổn định, 
+                                        xử lý tự động 85% khối lượng công việc báo cáo.
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="achievement-item">
+                                <div class="achievement-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="achievement-content">
+                                    <div class="achievement-title">Đào tạo nhân viên hiệu quả</div>
+                                    <div class="achievement-description">
+                                        45/50 nhân viên đã hoàn thành khóa đào tạo với điểm số trung bình 9.2/10, 
+                                        sẵn sàng sử dụng hệ thống mới.
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="achievement-item">
+                                <div class="achievement-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="achievement-content">
+                                    <div class="achievement-title">Giải thưởng xuất sắc</div>
+                                    <div class="achievement-description">
+                                        Dự án được vinh danh "Sáng kiến số hóa xuất sắc Q2/2025" 
+                                        bởi Hiệp hội Ngân hàng Việt Nam.
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div class="tab-content" id="dashboard">
+                <div class="description-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-area"></i>
+                        Biểu đồ hiệu suất
+                    </h2>
+                    <div class="dashboard-grid">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <div class="chart-title">Tiến độ hoàn thành theo thời gian</div>
+                                <div class="chart-period">7 ngày gần nhất</div>
+                            </div>
+                            <div class="chart-canvas">
+                                <canvas id="progressChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <div class="chart-title">Phân bố công việc theo module</div>
+                                <div class="chart-period">Hiện tại</div>
+                            </div>
+                            <div class="chart-canvas">
+                                <canvas id="moduleChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <div class="chart-title">Hiệu suất xử lý dữ liệu</div>
+                                <div class="chart-period">30 ngày</div>
+                            </div>
+                            <div class="chart-canvas">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <div class="chart-title">Chi phí dự án theo giai đoạn</div>
+                                <div class="chart-period">Tổng quan</div>
+                            </div>
+                            <div class="chart-canvas">
+                                <canvas id="costChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="description-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-broadcast-tower"></i>
+                        Dữ liệu thời gian thực
+                    </h2>
+                    <div class="realtime-data">
+                        <div class="data-grid">
+                            <div class="data-item">
+                                <div class="data-value">1,247</div>
+                                <div class="data-label">Báo cáo đã xử lý</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-value">98.7%</div>
+                                <div class="data-label">Uptime hệ thống</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-value">2.3s</div>
+                                <div class="data-label">Thời gian phản hồi</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-value">0</div>
+                                <div class="data-label">Lỗi hệ thống</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-value">156</div>
+                                <div class="data-label">User đang online</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-value">4.2GB</div>
+                                <div class="data-label">Dữ liệu xử lý/giờ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q&A Tab -->
+            <div class="tab-content" id="qa">
+                <div class="qa-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-comments"></i>
+                        Hỏi &amp; Đáp về dự án
+                    </h2>
+                    <button class="ask-question-btn" id="askQuestionBtn">
+                        <i class="fas fa-plus"></i>
+                        Đặt câu hỏi mới
+                    </button>
+                </div>
+
+                <!-- Question Form -->
+                <div class="question-form" id="questionForm">
+                    <div class="form-group">
+                        <label class="form-label">Tiêu đề câu hỏi</label>
+                        <input type="text" class="form-input" placeholder="Nhập tiêu đề câu hỏi..." id="questionTitle">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nội dung chi tiết</label>
+                        <textarea class="form-textarea" placeholder="Mô tả chi tiết câu hỏi của bạn..." id="questionContent"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-submit" id="submitQuestion">
+                            <i class="fas fa-paper-plane"></i>
+                            Gửi câu hỏi
+                        </button>
+                        <button class="btn-cancel" id="cancelQuestion">
+                            Hủy bỏ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Questions List -->
+                <ul class="questions-list">
+                    <li class="question-item">
+                        <div class="question-header">
+                            <div class="question-meta">
+                                <div class="question-author">
+                                    <div class="author-avatar">NV</div>
+                                    <div class="author-info">
+                                        <div class="author-name">Nguyễn Văn An</div>
+                                        <div class="question-date">2 giờ trước</div>
+                                    </div>
+                                </div>
+                                <div class="question-status status-answered">Đã trả lời</div>
+                            </div>
+                            <div class="question-title">
+                                Hệ thống RPA có thể xử lý được bao nhiêu báo cáo đồng thời?
+                            </div>
+                            <div class="question-content">
+                                Tôi muốn biết khả năng xử lý song song của hệ thống RPA mới, 
+                                đặc biệt trong thời điểm cao điểm cuối tháng khi có nhiều báo cáo cần được tạo cùng lúc.
+                            </div>
+                        </div>
+                        <div class="question-actions">
+                            <div class="question-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span>5</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-comment"></i>
+                                    <span>2</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>23</span>
+                                </div>
+                            </div>
+                            <div class="question-controls">
+                                <button class="control-btn" onclick="toggleAnswer(this)">Xem trả lời</button>
+                                <button class="control-btn">Thích</button>
+                                <button class="control-btn">Chia sẻ</button>
+                            </div>
+                        </div>
+                        <div class="answer-section">
+                            <div class="answer-item">
+                                <div class="answer-header">
+                                    <div class="answer-author">
+                                        <div class="author-avatar">PM</div>
+                                        <div class="author-info">
+                                            <div class="author-name">Trần Thị Mai - Project Manager</div>
+                                            <div class="question-date">1 giờ trước</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="answer-content">
+                                    Hệ thống RPA hiện tại có thể xử lý đồng thời tối đa 20 báo cáo song song. 
+                                    Trong thời điểm cao điểm, chúng tôi có thể scale up lên 50 báo cáo đồng thời 
+                                    thông qua cloud infrastructure. Hệ thống cũng có queue management để 
+                                    ưu tiên các báo cáo quan trọng.
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="question-item">
+                        <div class="question-header">
+                            <div class="question-meta">
+                                <div class="question-author">
+                                    <div class="author-avatar">LH</div>
+                                    <div class="author-info">
+                                        <div class="author-name">Lê Hoàng Nam</div>
+                                        <div class="question-date">5 giờ trước</div>
+                                    </div>
+                                </div>
+                                <div class="question-status status-pending">Chờ trả lời</div>
+                            </div>
+                            <div class="question-title">
+                                Làm thế nào để đảm bảo tính bảo mật của dữ liệu trong quá trình xử lý?
+                            </div>
+                            <div class="question-content">
+                                Với việc tự động hóa quy trình báo cáo tài chính, tôi quan tâm đến các biện pháp 
+                                bảo mật được áp dụng để bảo vệ dữ liệu nhạy cảm trong suốt quá trình xử lý.
+                            </div>
+                        </div>
+                        <div class="question-actions">
+                            <div class="question-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span>8</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-comment"></i>
+                                    <span>0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>45</span>
+                                </div>
+                            </div>
+                            <div class="question-controls">
+                                <button class="control-btn">Trả lời</button>
+                                <button class="control-btn">Thích</button>
+                                <button class="control-btn">Chia sẻ</button>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="question-item">
+                        <div class="question-header">
+                            <div class="question-meta">
+                                <div class="question-author">
+                                    <div class="author-avatar">PT</div>
+                                    <div class="author-info">
+                                        <div class="author-name">Phạm Thu Hương</div>
+                                        <div class="question-date">1 ngày trước</div>
+                                    </div>
+                                </div>
+                                <div class="question-status status-answered">Đã trả lời</div>
+                            </div>
+                            <div class="question-title">
+                                Khi nào nhân viên có thể bắt đầu sử dụng hệ thống mới?
+                            </div>
+                            <div class="question-content">
+                                Tôi muốn biết lịch trình cụ thể cho việc rollout hệ thống và 
+                                khi nào các phòng ban có thể chính thức chuyển sang sử dụng hệ thống tự động.
+                            </div>
+                        </div>
+                        <div class="question-actions">
+                            <div class="question-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span>12</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-comment"></i>
+                                    <span>3</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>67</span>
+                                </div>
+                            </div>
+                            <div class="question-controls">
+                                <button class="control-btn" onclick="toggleAnswer(this)">Xem trả lời</button>
+                                <button class="control-btn">Thích</button>
+                                <button class="control-btn">Chia sẻ</button>
+                            </div>
+                        </div>
+                        <div class="answer-section">
+                            <div class="answer-item">
+                                <div class="answer-header">
+                                    <div class="answer-author">
+                                        <div class="author-avatar">PM</div>
+                                        <div class="author-info">
+                                            <div class="author-name">Trần Thị Mai - Project Manager</div>
+                                            <div class="question-date">20 giờ trước</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="answer-content">
+                                    Dự kiến hệ thống sẽ được rollout theo 3 giai đoạn:<br>
+                                    - Giai đoạn 1 (15/08): Phòng Tài chính và Kế toán<br>
+                                    - Giai đoạn 2 (25/08): Các phòng ban liên quan (Risk, Audit)<br>
+                                    - Giai đoạn 3 (30/08): Toàn bộ hệ thống đi vào hoạt động chính thức
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Project Info -->
+            <div class="sidebar-section">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-info-circle"></i>
+                        Thông tin dự án
+                    </h3>
+                </div>
+                <div class="sidebar-content">
+                    <div class="info-item">
+                        <span class="info-label">Trạng thái</span>
+                        <span class="info-value" style="color: #28a745;">Đang triển khai</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Độ ưu tiên</span>
+                        <span class="info-value" style="color: #dc3545;">Cao</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ngân sách</span>
+                        <span class="info-value">2.5 tỷ VNĐ</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Đã sử dụng</span>
+                        <span class="info-value">1.8 tỷ VNĐ (72%)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Sponsor</span>
+                        <span class="info-value">Giám đốc Tài chính</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Loại dự án</span>
+                        <span class="info-value">Chuyển đổi số</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members -->
+            <div class="sidebar-section">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-users"></i>
+                        Đội ngũ dự án
+                    </h3>
+                </div>
+                <div class="sidebar-content">
+                    <div class="team-member">
+                        <div class="member-avatar">TM</div>
+                        <div class="member-info">
+                            <div class="member-name">Trần Thị Mai</div>
+                            <div class="member-role">Project Manager</div>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">NĐ</div>
+                        <div class="member-info">
+                            <div class="member-name">Nguyễn Văn Đức</div>
+                            <div class="member-role">Tech Lead</div>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">LH</div>
+                        <div class="member-info">
+                            <div class="member-name">Lê Hoàng Nam</div>
+                            <div class="member-role">RPA Developer</div>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">PT</div>
+                        <div class="member-info">
+                            <div class="member-name">Phạm Thu Hương</div>
+                            <div class="member-role">Business Analyst</div>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">VK</div>
+                        <div class="member-info">
+                            <div class="member-name">Vũ Thị Kim</div>
+                            <div class="member-role">Data Scientist</div>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">+3</div>
+                        <div class="member-info">
+                            <div class="member-name">3 thành viên khác</div>
+                            <div class="member-role">Developers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents -->
+            <div class="sidebar-section">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-file-alt"></i>
+                        Tài liệu dự án
+                    </h3>
+                </div>
+                <div class="sidebar-content">
+                    <div class="file-item">
+                        <div class="file-icon pdf">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">Đề xuất dự án.pdf</div>
+                            <div class="file-size">2.4 MB</div>
+                        </div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon doc">
+                            <i class="fas fa-file-word"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">Tài liệu kỹ thuật.docx</div>
+                            <div class="file-size">5.8 MB</div>
+                        </div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon xls">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">Ngân sách chi tiết.xlsx</div>
+                            <div class="file-size">1.2 MB</div>
+                        </div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon pdf">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">Báo cáo tiến độ.pdf</div>
+                            <div class="file-size">3.1 MB</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="sidebar-section">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-history"></i>
+                        Lịch sử hoạt động
+                    </h3>
+                </div>
+                <div class="sidebar-content">
+                    <div class="timeline-item">
+                        <div class="timeline-icon success">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Hoàn thành module báo cáo</div>
+                            <div class="timeline-date">2 giờ trước</div>
+                            <div class="timeline-description">
+                                Module tạo báo cáo tự động đã được test và đưa vào production
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon info">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Cập nhật tiến độ dự án</div>
+                            <div class="timeline-date">1 ngày trước</div>
+                            <div class="timeline-description">
+                                PM đã cập nhật tiến độ lên 75%, sẵn sàng cho giai đoạn UAT
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon warning">
+                            <i class="fas fa-exclamation"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Phát hiện vấn đề kỹ thuật</div>
+                            <div class="timeline-date">3 ngày trước</div>
+                            <div class="timeline-description">
+                                Tốc độ xử lý chậm hơn dự kiến, đang thảo luận giải pháp tối ưu
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon success">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Hoàn thành đào tạo batch 2</div>
+                            <div class="timeline-date">1 tuần trước</div>
+                            <div class="timeline-description">
+                                25 nhân viên đã hoàn thành khóa đào tạo với điểm trung bình 9.1/10
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+
+                    // Remove active class from all tabs and contents
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+
+                    // Initialize charts if dashboard tab is selected
+                    if (targetTab === 'dashboard') {
+                        setTimeout(initCharts, 100);
+                    }
+                });
+            });
+
+            // Q&A functionality
+            const askQuestionBtn = document.getElementById('askQuestionBtn');
+            const questionForm = document.getElementById('questionForm');
+            const submitQuestion = document.getElementById('submitQuestion');
+            const cancelQuestion = document.getElementById('cancelQuestion');
+
+            askQuestionBtn.addEventListener('click', function() {
+                questionForm.classList.add('active');
+                askQuestionBtn.style.display = 'none';
+            });
+
+            cancelQuestion.addEventListener('click', function() {
+                questionForm.classList.remove('active');
+                askQuestionBtn.style.display = 'flex';
+                clearForm();
+            });
+
+            submitQuestion.addEventListener('click', function() {
+                const title = document.getElementById('questionTitle').value;
+                const content = document.getElementById('questionContent').value;
+
+                if (title && content) {
+                    alert('Câu hỏi đã được gửi thành công!');
+                    questionForm.classList.remove('active');
+                    askQuestionBtn.style.display = 'flex';
+                    clearForm();
+                } else {
+                    alert('Vui lòng điền đầy đủ thông tin!');
+                }
+            });
+
+            function clearForm() {
+                document.getElementById('questionTitle').value = '';
+                document.getElementById('questionContent').value = '';
+            }
+
+            // Initialize charts on page load
+            setTimeout(initCharts, 100);
+        });
+
+        // Toggle answer visibility
+        function toggleAnswer(button) {
+            const questionItem = button.closest('.question-item');
+            const answerSection = questionItem.querySelector('.answer-section');
+            
+            if (answerSection.classList.contains('active')) {
+                answerSection.classList.remove('active');
+                button.textContent = 'Xem trả lời';
+            } else {
+                answerSection.classList.add('active');
+                button.textContent = 'Ẩn trả lời';
+            }
+        }
+
+        // Chart initialization
+        function initCharts() {
+            // Progress Chart
+            const progressCtx = document.getElementById('progressChart');
+            if (progressCtx) {
+                new Chart(progressCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                        datasets: [{
+                            label: 'Tiến độ (%)',
+                            data: [65, 68, 70, 72, 73, 75, 75],
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Module Chart
+            const moduleCtx = document.getElementById('moduleChart');
+            if (moduleCtx) {
+                new Chart(moduleCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['RPA Bots', 'AI Engine', 'Dashboard', 'Integration', 'Security'],
+                        datasets: [{
+                            data: [30, 25, 20, 15, 10],
+                            backgroundColor: [
+                                '#667eea',
+                                '#764ba2',
+                                '#f093fb',
+                                '#f5576c',
+                                '#4facfe'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart');
+            if (performanceCtx) {
+                new Chart(performanceCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'],
+                        datasets: [{
+                            label: 'Báo cáo xử lý',
+                            data: [45, 52, 48, 61],
+                            backgroundColor: '#667eea'
+                        }, {
+                            label: 'Lỗi xử lý',
+                            data: [2, 1, 3, 1],
+                            backgroundColor: '#f5576c'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Cost Chart
+            const costCtx = document.getElementById('costChart');
+            if (costCtx) {
+                new Chart(costCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5'],
+                        datasets: [{
+                            label: 'Kế hoạch',
+                            data: [500, 1000, 1500, 2000, 2500],
+                            borderColor: '#28a745',
+                            backgroundColor: 'transparent',
+                            borderDash: [5, 5]
+                        }, {
+                            label: 'Thực tế',
+                            data: [480, 950, 1420, 1800, 1800],
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + 'M VNĐ';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Animation for numbers (KPIs)
+        function animateNumbers() {
+            const kpiValues = document.querySelectorAll('.kpi-value');
+            kpiValues.forEach(value => {
+                const target = parseInt(value.textContent);
+                const increment = target / 20;
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        value.textContent = target + (value.textContent.includes('%') ? '%' : '');
+                        clearInterval(timer);
+                    } else {
+                        value.textContent = Math.floor(current) + (value.textContent.includes('%') ? '%' : '');
+                    }
+                }, 50);
+            });
+        }
+
+        // Trigger animations when Results tab is shown
+        document.querySelector('[data-tab="results"]').addEventListener('click', function() {
+            setTimeout(animateNumbers, 100);
+        });
+    </script>
+
+
+</body></html>
